@@ -7,7 +7,7 @@ import sys, os
 import bitcoinlib
 
 VERSION = float(0.1)
-BTCLIB_DB_PATH = str('/home/agnes/.bitcoinlib/database/bitcoinlib.sqlite')
+BTCLIB_DB_PATH = str('')
 STATUSBAR = str('')
 MSGBAR = str('')
 OS_CLEARSCREEN = str('')
@@ -215,5 +215,11 @@ def main(argv):
 
 if __name__ == '__main__':
 	OS_CLEARSCREEN = os.name
+
+	BTCLIB_DB_PATH = os.getenv("HOME") + '/.bitcoinlib/database/bitcoinlib.sqlite'
+	if os.path.isfile(BTCLIB_DB_PATH) == False:
+		BTCLIB_DB_PATH = 'UNDEFINED WALLET DB'
+
 	main(sys.argv)
+
 	sys.exit(0)
