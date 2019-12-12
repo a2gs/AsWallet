@@ -195,21 +195,35 @@ def screen_OperWltt():
 	[print('Id.....: [' + str(i['id']) + ']\nName...: [' + i['name'] + ']\nOwner..: [' + i['owner'] +
 	       ']\nNetwork: [' + i['network'] + ']\nInfo...: [' + str(i['purpose']) + i['scheme'] + ']\n') for i in acc]
 
-	while True:
+	while wid == 0:
 		try:
 			wid = int(input('Wallet id (blank to go back): '))
 		except:
+			if wid == 0:
+				return screen_Wallet()
+
 			continue
 
-		if wid == '':
-			return screen_Wallet()
-
+	printScreenHeader(scrBar = '', msgBar = 'Wallet Id selected [' + str(wid) + ']')
 
 	input()
+	return screen_Wallet
 
 def screen_Cfg():
-	print('Not implemented')
-	sys.exit(0)
+	menu = {
+		'titles':[
+			"1 - Select a new Bitcoin lib path",
+			"2 - Back",
+			"0 - Exit"
+		],
+		'funcs':[
+			screen_SelPthBTCLib,
+			screen_Main,
+			screen_Exit
+		]
+	}
+
+	return menu['funcs'][exec_menu(menu['titles'])]
 
 def screen_Wallet():
 	menu = {
@@ -218,7 +232,6 @@ def screen_Wallet():
 			"2 - Delete wallet",
 			"3 - Operate wallet (send/recv/export keys/info)",
 			"4 - Import a wallet",
-			"6 - Configs (database, backups, nodes/servers)",
 			"5 - Back",
 			"0 - Exit"
 		],
@@ -227,7 +240,6 @@ def screen_Wallet():
 			screen_DelWltt,
 			screen_OperWltt,
 			screen_ImpWltt,
-			screen_Cfg,
 			screen_Main,
 			screen_Exit
 		]
@@ -248,13 +260,13 @@ def screen_Exit():
 def screen_Main():
 	menu = {
 		'titles':[
-			"1 - Select a new Bitcoin lib path",
-			"2 - Confirm default path and go to Wallet menu",
+			"1 - Wallet menu",
+			"2 - Configs (DB path, backups, nodes/servers)",
 			"0 - Exit"
 		],
 		'funcs':[
-			screen_SelPthBTCLib,
 			screen_Wallet,
+			screen_Cfg,
 			screen_Exit
 		]
 	}
