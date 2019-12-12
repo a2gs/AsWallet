@@ -11,7 +11,6 @@ VERSION = float(0.1)
 BTCLIB_DB_PATH = str('')
 SCREENBAR = str('')
 MSGBAR = str('')
-OS_CLEARSCREEN = str('')
 
 def clearscreen():
 	if os.name == 'posix':
@@ -82,7 +81,7 @@ def screen_SelPthBTCLib():
 			return screen_Main
 
 		if os.path.isfile(newPath) == False:
-			print('Invalid file path! [ENTER]')
+			print('Invalid file path! Pause [ENTER]')
 			input()
 		else:
 			break
@@ -188,10 +187,29 @@ def screen_DelWltt():
 def screen_OperWltt():
 #  accounts(network='bitcoin')[source]
 #  addresslist(account_id=None, used=None, network=None, change=None, depth=None, key_id=None)[source]
+	wid = 0
+
+	printScreenHeader(scrBar = 'Operate a Wallet', msgBar = '')
+
 	acc = bitcoinlib.wallets.wallets_list(BTCLIB_DB_PATH)
-	[print(i) for i in acc]
+	[print('Id.....: [' + str(i['id']) + ']\nName...: [' + i['name'] + ']\nOwner..: [' + i['owner'] +
+	       ']\nNetwork: [' + i['network'] + ']\nInfo...: [' + str(i['purpose']) + i['scheme'] + ']\n') for i in acc]
+
+	while True:
+		try:
+			wid = int(input('Wallet id (blank to go back): '))
+		except:
+			continue
+
+		if wid == '':
+			return screen_Wallet()
+
 
 	input()
+
+def screen_Cfg():
+	print('Not implemented')
+	sys.exit(0)
 
 def screen_Wallet():
 	menu = {
@@ -200,6 +218,7 @@ def screen_Wallet():
 			"2 - Delete wallet",
 			"3 - Operate wallet (send/recv/export keys/info)",
 			"4 - Import a wallet",
+			"6 - Configs (database, backups, nodes/servers)",
 			"5 - Back",
 			"0 - Exit"
 		],
@@ -208,6 +227,7 @@ def screen_Wallet():
 			screen_DelWltt,
 			screen_OperWltt,
 			screen_ImpWltt,
+			screen_Cfg,
 			screen_Main,
 			screen_Exit
 		]
@@ -250,7 +270,6 @@ def main(argv):
 		scr = scr()
 
 if __name__ == '__main__':
-	OS_CLEARSCREEN = os.name
 
 	BTCLIB_DB_PATH = os.getenv("HOME") + '/.bitcoinlib/database/bitcoinlib.sqlite'
 	if os.path.isfile(BTCLIB_DB_PATH) == False:
