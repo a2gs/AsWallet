@@ -9,7 +9,7 @@ import qrcode # https://github.com/lincolnloop/python-qrcode
 
 VERSION = float(0.1)
 BTCLIB_DB_PATH = str('')
-STATUSBAR = str('')
+SCREENBAR = str('')
 MSGBAR = str('')
 OS_CLEARSCREEN = str('')
 
@@ -27,8 +27,6 @@ def exec_menu(opts):
 	while True:
 		printScreenHeader()
 
-		print('\n')
-
 		[print(i) for i in opts]
 
 		print('\n')
@@ -41,21 +39,21 @@ def exec_menu(opts):
 		if x < totOpts:
 			return x - 1
 
-def setStatusMsgBars(sts, msg):
-	global STATUSBAR
+def setStatusMsgBars(scr, msg):
+	global SCREENBAR
 	global MSGBAR
 
-	STATUSBAR = sts
+	SCREENBAR = scr
 	MSGBAR = msg
 
-def printScreenHeader(stsBar = '', msgBar = ''):
+def printScreenHeader(scrBar = '', msgBar = ''):
 	global VERSION
 	global BTCLIB_DB_PATH
-	global STATUSBAR
+	global SCREENBAR
 	global MSGBAR
 
-	if stsBar != '':
-		STATUSBAR = stsBar
+	if scrBar != '':
+		SCREENBAR = scrBar
 
 	if msgBar != '':
 		MSGBAR = msgBar
@@ -63,7 +61,7 @@ def printScreenHeader(stsBar = '', msgBar = ''):
 	clearscreen()
 	print('As Wallet\n=========')
 	print(f'(Version: \'{VERSION}\' BitcoinLib DB path: \'{BTCLIB_DB_PATH}\')\n')
-	print(f'{STATUSBAR}')
+	print(f'{SCREENBAR}')
 	print(f'Status: {MSGBAR}\n')
 
 def screen_SelPthBTCLib():
@@ -73,7 +71,7 @@ def screen_SelPthBTCLib():
 	global BTCLIB_DB_PATH
 
 	while True:
-		printScreenHeader(stsBar = screenTitle)
+		printScreenHeader(scrBar = screenTitle)
 
 		try:
 			newPath = input('New SQLite bitcoinlib DB path (blank to go back): ')
@@ -104,7 +102,7 @@ def screen_CreaBTCWltt():
 	wltnet   = str('')
 	wltname  = str('')
 
-	printScreenHeader(stsBar = screenTitle)
+	printScreenHeader(scrBar = screenTitle)
 
 	try:
 		wltname = input('Wallet name (blank to go back): ')
