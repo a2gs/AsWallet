@@ -187,11 +187,16 @@ def screen_DelWltt():
 def screen_OperWltt():
 #  accounts(network='bitcoin')[source]
 #  addresslist(account_id=None, used=None, network=None, change=None, depth=None, key_id=None)[source]
+
+# {'id': 1, 'name': 'Wallet1', 'owner': '', 'network': 'bitcoin', 'purpose': 44, 'scheme': 'bip32', 'main_key_id': 1, 'parent_id': None}
+
 	wid = 0
 
 	printScreenHeader(scrBar = 'Operate a Wallet', msgBar = '')
 
 	acc = bitcoinlib.wallets.wallets_list(BTCLIB_DB_PATH)
+#	[print(i) for i in acc]
+
 	[print('Id.....: [' + str(i['id']) + ']\nName...: [' + i['name'] + ']\nOwner..: [' + i['owner'] +
 	       ']\nNetwork: [' + i['network'] + ']\nInfo...: [' + str(i['purpose']) + i['scheme'] + ']\n') for i in acc]
 
@@ -204,7 +209,15 @@ def screen_OperWltt():
 
 			continue
 
-	printScreenHeader(scrBar = '', msgBar = 'Wallet Id selected [' + str(wid) + ']')
+		try:
+			widReg = [k for k in acc if k['id'] == wid][0]
+		except IndexError:
+			wid = 0
+			print('Invalid Id!')
+		except:
+			return screen_Wallet()
+
+	printScreenHeader(scrBar = '', msgBar = f'Wallet Id selected [{wid} - ' + widReg['name'] + ']')
 
 	input()
 	return screen_Wallet
