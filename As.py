@@ -4,7 +4,8 @@
 # Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/)
 
 import sys, os
-import bitcoinlib
+import bitcoinlib # https://bitcoinlib.readthedocs.io/en/latest/index.html#
+import qrcode # https://github.com/lincolnloop/python-qrcode
 
 VERSION = float(0.1)
 BTCLIB_DB_PATH = str('')
@@ -47,11 +48,17 @@ def setStatusMsgBars(sts, msg):
 	STATUSBAR = sts
 	MSGBAR = msg
 
-def printScreenHeader():
+def printScreenHeader(stsBar = '', msgBar = ''):
 	global VERSION
 	global BTCLIB_DB_PATH
 	global STATUSBAR
 	global MSGBAR
+
+	if stsBar != '':
+		STATUSBAR = stsBar
+
+	if msgBar != '':
+		MSGBAR = msgBar
 
 	clearscreen()
 	print('As Wallet\n=========')
@@ -61,22 +68,53 @@ def printScreenHeader():
 
 def screen_SelPthBTCLib():
 # bitcoinlib.db.DbInit(databasefile='/home/docs/.bitcoinlib/database/bitcoinlib.sqlite')[source]
-	print('Not implemented')
-	sys.exit(0)
+	screenTitle = 'Set bitcoinlib DB path'
+	newPath = str('')
+	global BTCLIB_DB_PATH
+
+	while True:
+		printScreenHeader(stsBar = screenTitle)
+
+		try:
+			newPath = input('New SQLite bitcoinlib DB path (blank to go back): ')
+		except:
+			return screen_ERROR('select new bitcoinlib DB path  input() throw exception')
+
+		if newPath == '':
+			return screen_Main
+
+		if os.path.isfile(newPath) == False:
+			print('Invalid file path! [ENTER]')
+			input()
+		else:
+			break
+
+	BTCLIB_DB_PATH = newPath
+
+	return screen_Main
+
+def screen_ERROR(errStr):
+	print('Erro: ' + errStr)
+	sys.exit(1)
+
 
 def screen_CreaBTCWltt():
+	screenTitle = 'Create BTC Wallet Menu'
 	wlttype  = str('')
 	wltnet   = str('')
 	wltname  = str('')
 
-	setStatusMsgBars('Create BTC Wallet Menu', '')
+	printScreenHeader(stsBar = screenTitle)
 
 	try:
 		wltname = input('Wallet name (blank to go back): ')
 	except:
-		return
+		return screen_ERROR('wallet name input() throw exception')
 
-	setStatusMsgBars('Create BTC Wallet Menu', 'Name ' + wltname)
+	if wltname == '':
+		return screen_CreaWltt
+
+	setStatusMsgBars(screenTitle, 'Name [' + wltname + ']')
 
 	menu = ["1 - Legacy",
 	        "2 - Segwit",
@@ -97,7 +135,7 @@ def screen_CreaBTCWltt():
 	elif opt == 2:
 		wlttype = 'p2sh-segwit'
 
-	setStatusMsgBars('Create BTC Wallet Menu', 'Name [' + wltname + '] Type [' + wlttype + ']')
+	setStatusMsgBars(screenTitle, 'Name [' + wltname + '] Type [' + wlttype + ']')
 
 	menu = ["1 - BTC Main net",
 	        "2 - Litecoin",
@@ -118,7 +156,7 @@ def screen_CreaBTCWltt():
 	elif opt == 2:
 		wltnet = 'litecoin'
 
-	setStatusMsgBars('Create BTC Wallet Menu', 'Name [' + wltname + '] Type [' + wlttype + ']' + ' Net [' + wltnet + ']')
+	setStatusMsgBars(screenTitle, 'Name [' + wltname + '] Type [' + wlttype + ']' + ' Net [' + wltnet + ']')
 	sys.exit(0)
 
 def screen_CreaLTCWltt():
