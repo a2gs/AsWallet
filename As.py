@@ -12,6 +12,8 @@ BTCLIB_DB_PATH = str('')
 SCREENBAR = str('')
 MSGBAR = str('')
 
+widReg = []
+
 def clearscreen():
 	if os.name == 'posix':
 		os.system('clear')
@@ -190,6 +192,7 @@ def screen_OperWltt():
 
 # {'id': 1, 'name': 'Wallet1', 'owner': '', 'network': 'bitcoin', 'purpose': 44, 'scheme': 'bip32', 'main_key_id': 1, 'parent_id': None}
 
+	global widReg
 	wid = 0
 
 	printScreenHeader(scrBar = 'Operate a Wallet', msgBar = '')
@@ -198,7 +201,7 @@ def screen_OperWltt():
 #	[print(i) for i in acc]
 
 	[print('Id.....: [' + str(i['id']) + ']\nName...: [' + i['name'] + ']\nOwner..: [' + i['owner'] +
-	       ']\nNetwork: [' + i['network'] + ']\nInfo...: [' + str(i['purpose']) + i['scheme'] + ']\n') for i in acc]
+	       ']\nNetwork: [' + i['network'] + ']\nInfo...: [' + str(i['purpose']) + '/' + i['scheme'] + ']\n') for i in acc]
 
 	while wid == 0:
 		try:
@@ -219,8 +222,76 @@ def screen_OperWltt():
 
 	printScreenHeader(scrBar = '', msgBar = f'Wallet Id selected [{wid} - ' + widReg['name'] + ']')
 
+	menu = {
+		'titles':[
+			"1 - Send",
+			"2 - Receive",
+			"3 - Balance and history",
+			"4 - Export private Key",
+			"5 - Back",
+			"0 - Exit"
+		],
+		'funcs':[
+			screen_Send,
+			screen_Recv,
+			screen_BalanceHistory,
+			screen_ExportPrivateKey,
+			screen_Wallet,
+			screen_Exit
+		]
+	}
+
+	return menu['funcs'][exec_menu(menu['titles'])]
+
 	input()
 	return screen_Wallet
+
+def screen_Send():
+	print('Not implemented')
+	sys.exit(0)
+
+def screen_Recv():
+	print('Not implemented')
+	sys.exit(0)
+
+def screen_ExportPrivateKey():
+	printScreenHeader(scrBar = 'Export Private Key', msgBar = 'Wallet ' + widReg['name'])
+
+	w = bitcoinlib.wallets.HDWallet(widReg['id'])
+
+	print('Private key (WIF): ' + w.get_key().wif)
+	print('Path: ' + w.get_key().path)
+
+	menu = ["1 - Print to QR code PNG file",
+	        "ENTER - Back"]
+
+	opt = exec_menu(menu)
+	if opt == 0:
+		prvQrCodeFileName = input('PNG file name to print: ')
+
+		qr = qrcode.QRCode(version = 1, error_correction = qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+		qr.add_data(w.get_key().wif)
+		qr.make(fit=True)
+
+		img = qr.make_image(fill_color="black", back_color="white")
+#TODO
+
+
+	return screen_OperWltt
+
+def screen_BalanceHistory():
+	printScreenHeader(scrBar = 'Wallet Balance', msgBar = 'Wallet ' + widReg['name'])
+	w = bitcoinlib.wallets.HDWallet(widReg['id'])
+	print('Balance: ', end = '')
+	print(w.balance())
+
+#	print(w.accounts())
+#	print(w.balance_update_from_serviceprovider())
+#	print(w.default_account_id)
+	print('Pause [ENTER]')
+	input()
+#TODO
+	return screen_OperWltt
 
 def screen_Cfg():
 	menu = {
