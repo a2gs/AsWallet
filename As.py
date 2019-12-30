@@ -3,7 +3,7 @@
 
 # Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/)
 
-import sys, os
+import sys, signal, os
 import bitcoinlib # https://bitcoinlib.readthedocs.io/en/latest/index.html#
 import qrcode # https://github.com/lincolnloop/python-qrcode
 
@@ -11,8 +11,16 @@ VERSION = float(0.1)
 BTCLIB_DB_PATH = str('')
 SCREENBAR = str('')
 MSGBAR = str('')
+TRM_LINES=int()
+TRM_COLS=int()
 
 widReg = []
+
+def getTerminalSize(sig, frame):
+	global TRM_COLS
+	global TRM_LINES
+
+	TRM_COLS, TRM_LINES = os.get_terminal_size()
 
 def clearscreen():
 	if os.name == 'posix':
@@ -52,6 +60,8 @@ def printScreenHeader(scrBar = '', msgBar = ''):
 	global BTCLIB_DB_PATH
 	global SCREENBAR
 	global MSGBAR
+	global TRM_COLS
+	global TRM_LINES
 
 	if scrBar != '':
 		SCREENBAR = scrBar
@@ -60,10 +70,13 @@ def printScreenHeader(scrBar = '', msgBar = ''):
 		MSGBAR = msgBar
 
 	clearscreen()
-	print('As Wallet\n=========')
+	print('As Wallet'.center(TRM_COLS))
+	print('========='.center(TRM_COLS))
+	print('-' * TRM_COLS)
 	print(f'(Version: \'{VERSION}\' BitcoinLib DB path: \'{BTCLIB_DB_PATH}\')\n')
-	print(f'{SCREENBAR}')
+	print(f'* {SCREENBAR} *'.center(TRM_COLS))
 	print(f'Status: {MSGBAR}\n')
+	print('-' * TRM_COLS)
 
 def screen_SelPthBTCLib():
 # bitcoinlib.db.DbInit(databasefile='/home/docs/.bitcoinlib/database/bitcoinlib.sqlite')[source]
@@ -370,6 +383,9 @@ if __name__ == '__main__':
 	BTCLIB_DB_PATH = os.getenv("HOME") + '/.bitcoinlib/database/bitcoinlib.sqlite'
 	if os.path.isfile(BTCLIB_DB_PATH) == False:
 		BTCLIB_DB_PATH = 'UNDEFINED WALLET DB'
+
+#	signal.signal(signal.SIGWINCH, getTerminalSize)     not working now. input() supresses the signal
+	getTerminalSize(0, 0)
 
 	main(sys.argv)
 
