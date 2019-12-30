@@ -1,7 +1,7 @@
 bitcoinlib==0.4.11
 certifi==2019.11.28
 chardet==3.0.4
-fastecdsa==1.7.5
+fastecdsa==2.0.0
 idna==2.8
 Pillow==6.2.1
 pyaes==1.6.1
@@ -9,5 +9,5 @@ qrcode==6.1
 requests==2.22.0
 scrypt==0.8.13
 six==1.13.0
-SQLAlchemy==1.3.11
+SQLAlchemy==1.3.12
 urllib3==1.25.7
