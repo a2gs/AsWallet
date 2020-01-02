@@ -275,6 +275,8 @@ def screen_Recv():
 	sys.exit(0)
 
 def screen_ExportPrivateKey():
+	global QRCODE_LIB_PRESENT
+
 	printScreenHeader(scrBar = 'Export Private Key', msgBar = 'Wallet ' + widReg['name'])
 
 	w = bitcoinlib.wallets.HDWallet(widReg['id'])
@@ -282,18 +284,24 @@ def screen_ExportPrivateKey():
 	print('Private key (WIF): ' + w.get_key().wif)
 	print('Path: ' + w.get_key().path)
 
-	menu = ["1 - Print to QR code PNG file",
-	        "ENTER - Back"]
+	if QRCODE_LIB_PRESENT == True:
 
-	opt = exec_menu(menu)
-	if opt == 0:
-		prvQrCodeFileName = input('PNG file name to print: ')
+		menu = ["1 - Print to QR code PNG file",
+		        "ENTER - Back"]
 
-		qr = qrcode.QRCode(version = 1, error_correction = qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-		qr.add_data(w.get_key().wif)
-		qr.make(fit=True)
+		opt = exec_menu(menu)
+		if opt == 0:
+			prvQrCodeFileName = input('PNG file name to print: ')
 
-		img = qr.make_image(fill_color="black", back_color="white")
+			qr = qrcode.QRCode(version = 1, error_correction = qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+			qr.add_data(w.get_key().wif)
+			qr.make(fit=True)
+
+			img = qr.make_image(fill_color="black", back_color="white")
+
+	else:
+		print("Pause [ENTER].")
+		input()
 #TODO
 
 
