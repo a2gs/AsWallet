@@ -5,7 +5,14 @@
 
 import sys, signal, os
 import bitcoinlib # https://bitcoinlib.readthedocs.io/en/latest/index.html#
-import qrcode # https://github.com/lincolnloop/python-qrcode
+try:
+	import qrcode # https://github.com/lincolnloop/python-qrcode
+except ModuleNotFoundError as err:
+	QRCODE_LIB_PRESENT = False
+	print("\nYou haven\'t qrcode module. You will not able to generate any qrcode image. Pause [ENTER].")
+	input()
+else:
+	QRCODE_LIB_PRESENT = True
 
 VERSION = float(0.1)
 BTCLIB_DB_PATH = str('')
