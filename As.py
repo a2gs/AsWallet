@@ -246,7 +246,7 @@ def screen_OperWltt():
 		'titles':[
 			"1 - Send",
 			"2 - Receive",
-			"3 - Balance and history",
+			"3 - Information and history",
 			"4 - Export private Key",
 			"5 - Back",
 			"0 - Exit"
@@ -254,7 +254,7 @@ def screen_OperWltt():
 		'funcs':[
 			screen_Send,
 			screen_Recv,
-			screen_BalanceHistory,
+			screen_BalanceHistoryInfo,
 			screen_ExportPrivateKey,
 			screen_Wallet,
 			screen_Exit
@@ -307,11 +307,13 @@ def screen_ExportPrivateKey():
 
 	return screen_OperWltt
 
-def screen_BalanceHistory():
+def screen_BalanceHistoryInfo():
 	printScreenHeader(scrBar = 'Wallet Balance', msgBar = 'Wallet ' + widReg['name'])
-	w = bitcoinlib.wallets.HDWallet(widReg['id'])
-	print('Balance: ', end = '')
-	print(w.balance())
+
+	print(bitcoinlib.wallets.HDWallet(widReg['id']).info())
+#	w = bitcoinlib.wallets.HDWallet(widReg['id'])
+#	print('Balance: ', end = '')
+#	print(w.balance())
 
 #	print(w.accounts())
 #	print(w.balance_update_from_serviceprovider())
