@@ -16,6 +16,7 @@ else:
 
 VERSION = float(0.1)
 BTCLIB_DB_PATH = str('')
+HOME_DIR = str('')
 SCREENBAR = str('')
 MSGBAR = str('')
 TRM_LINES=int()
@@ -276,36 +277,70 @@ def screen_Recv():
 
 def screen_ExportPrivateKey():
 	global QRCODE_LIB_PRESENT
+	global HOME_DIR
 
 	printScreenHeader(scrBar = 'Export Private Key', msgBar = 'Wallet ' + widReg['name'])
 
 	w = bitcoinlib.wallets.HDWallet(widReg['id'])
 
 	print('Private key (WIF): ' + w.get_key().wif)
+#	print('Seed: ' + bitcoinlib.mnemonic.Mnemonic().to_mnemonic(w.get_key().wif))
 	print('Path: ' + w.get_key().path)
 
 	if QRCODE_LIB_PRESENT == True:
 
-		menu = ["1 - Print to QR code PNG file",
+		menu = ["1 - Print Private key to QR code PNG file",
+		        "2 - Print Seed to QR code PNG file",
+		        "3 - Print PK and Seed to QR code PNG file",
 		        "ENTER - Back"]
 
+		prvQrCodeFileName  = ''
+		seedQrCodeFileName = ''
+
 		opt = exec_menu(menu)
-		if opt == 0:
-			prvQrCodeFileName = input('PNG file name to print: ')
 
-			qr = qrcode.QRCode(version = 1, error_correction = qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-			qr.add_data(w.get_key().wif)
-			qr.make(fit=True)
+		if opt == 0 or opt == 2:
+			prvQrCodeFileName = input('PNG file name to print PK: ')
+			prvQrCodeFileName = ''.join((HOME_DIR, prvQrCodeFileName))
 
-			img = qr.make_image(fill_color="black", back_color="white")
+		if opt == 1 or opt == 2:
+			seedQrCodeFileName = input('PNG file name to print seed: ')
+			seedQrCodeFileName = ''.join((HOME_DIR, seedQrCodeFileName))
 
-	else:
-		print("Pause [ENTER].")
-		input()
-#TODO
+		if prvQrCodeFileName != '':
+			if printQRCodeToFile(prvQrCodeFileName, w.get_key().wif) == False:
+				print(f'Error creating QRCode PK: {prvQrCodeFileName}')
+			else:
+				print(f'Created QRCode PK file: {prvQrCodeFileName}')
 
+		if seedQrCodeFileName != '':
+			if printQRCodeToFile(seedQrCodeFileName, w.get_key().wif) == False:
+				print(f'Error creating seed PK: {prvQrCodeFileName}')
+			else:
+				print(f'Created QRCode seed file: {prvQrCodeFileName}')
+
+	print("Pause [ENTER].")
+	input()
 
 	return screen_OperWltt
+
+def printQRCodeToFile(filename: str, data: str) -> bool:
+	try:
+		qr = qrcode.QRCode(version = 1,
+		                   error_correction = qrcode.constants.ERROR_CORRECT_H,
+		                   box_size = 10,
+		                   border = 4)
+		qr.add_data(data)
+		qr.make(fit = True)
+
+		img = qr.make_image(fill_color = "black", back_color = "white")
+
+		img.save(filename)
+
+	except:
+		return False
+
+	return True
 
 def screen_BalanceHistoryInfo():
 	printScreenHeader(scrBar = 'Wallet Balance', msgBar = 'Wallet ' + widReg['name'])
@@ -397,7 +432,9 @@ def main(argv):
 
 if __name__ == '__main__':
 
-	BTCLIB_DB_PATH = os.getenv("HOME") + '/.bitcoinlib/database/bitcoinlib.sqlite'
+	HOME_DIR = os.path.expanduser("~/")
+#	BTCLIB_DB_PATH = os.getenv("HOME") + '/.bitcoinlib/database/bitcoinlib.sqlite'
+	BTCLIB_DB_PATH = HOME_DIR + '.bitcoinlib/database/bitcoinlib.sqlite'
 	if os.path.isfile(BTCLIB_DB_PATH) == False:
 		BTCLIB_DB_PATH = 'UNDEFINED WALLET DB'
 
