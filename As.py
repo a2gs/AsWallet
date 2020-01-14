@@ -229,7 +229,7 @@ def screen_OperWltt():
 			wid = int(input('Wallet id (blank to go back): '))
 		except:
 			if wid == 0:
-				return screen_Wallet()
+				return screen_Wallet
 
 			continue
 
@@ -239,7 +239,7 @@ def screen_OperWltt():
 			wid = 0
 			print('Invalid Id!')
 		except:
-			return screen_Wallet()
+			return screen_Wallet
 
 	printScreenHeader(scrBar = '', msgBar = f'Wallet Id selected [{wid} - ' + widReg['name'] + ']')
 
@@ -264,12 +264,31 @@ def screen_OperWltt():
 
 	return menu['funcs'][exec_menu(menu['titles'])]
 
-	input()
-	return screen_Wallet
-
 def screen_Send():
-	print('Not implemented')
-	sys.exit(0)
+
+# TODO
+
+	try:
+		sendToAddr = input('Send to (blank to go back): ')
+		amount = float(input('Amount (blank or 0 to go back): '))
+		fee = float(input('Fee (blank to go back. 0 = to automatically estimate): '))
+		locktime = int(input('Locktime (blank to go back. 0 = Default): '))
+		min_confirms = int(input('Minimal confirmation needed for an UTXO before it will included in inputs (blank to go back. 0 = Default): '))
+	except:
+		if not sendToAddr or not amount:
+			return screen_OperWltt
+
+	confirm = input("CONFIRM? Write 'YES' to confirm out something else to discart.")
+
+	if confirm == 'YES':
+		trx = bitcoinlib.wallets.send_to(to_address = sendToAddr, account_id = widReg['id'], amount = amount, fee = fee, min_confirms = min_confirms, locktime = locktime)
+	else:
+		print('Transaction aborted!')
+	
+	print('Pause [ENTER].')
+	input()
+
+	return screen_OperWltt
 
 def screen_Recv():
 	print('Not implemented')
