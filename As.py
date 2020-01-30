@@ -4,7 +4,7 @@
 # Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/)
 
 import sys, signal, os
-import bitcoinlib # https://bitcoinlib.readthedocs.io/en/latest/index.html#
+import bitcoinlib # https://bitcoinlib.readthedocs.io/en/latest/index.html
 try:
 	import qrcode # https://github.com/lincolnloop/python-qrcode
 except ModuleNotFoundError as err:
@@ -177,9 +177,14 @@ def screen_CreaBTCWltt():
 		wltnet = 'litecoin'
 
 	setStatusMsgBars(screenTitle, 'Name [' + wltname + '] Type [' + wlttype + ']' + ' Net [' + wltnet + ']')
+#TODO
 	sys.exit(0)
 
 def screen_CreaLTCWltt():
+	print('Not implemented')
+	sys.exit(0)
+
+def screen_CreaMultBTCWltt():
 	print('Not implemented')
 	sys.exit(0)
 
@@ -188,13 +193,15 @@ def screen_CreaWltt():
 		'titles':[
 			"1 - Create a bitcoin wallet",
 			"2 - Create a litecoin wallet",
-			"3 - Back",
+			"3 - Create a litecoin wallet",
+			"4 - Back",
 			"0 - Exit"
 		],
 		'funcs':[
 			screen_CreaBTCWltt,
 			screen_CreaLTCWltt,
 			screen_Wallet,
+			screen_CreaMultBTCWltt,
 			screen_Exit
 		]
 	}
