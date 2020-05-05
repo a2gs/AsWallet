@@ -41,7 +41,7 @@ def clearscreen():
 def exec_menu(opts):
 	totOpts = len(opts)
 
-	while True:
+	while(1):
 		printScreenHeader()
 
 		[print(i) for i in opts]
@@ -92,7 +92,7 @@ def screen_SelPthBTCLib():
 	newPath = str('')
 	global BTCLIB_DB_PATH
 
-	while True:
+	while(1):
 		printScreenHeader(scrBar = screenTitle)
 
 		try:
