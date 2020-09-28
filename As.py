@@ -3,8 +3,16 @@
 
 # Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/)
 
+#
+# ~/.local/lib/python3.6/site-packages/bitcoinlib/tools/clw.py
+#
+# ------------------------------------------------------------------------
+
 import sys, signal, os
+import screen_util
+import As_util
 import bitcoinlib # https://bitcoinlib.readthedocs.io/en/latest/index.html
+
 try:
 	import qrcode # https://github.com/lincolnloop/python-qrcode
 except ModuleNotFoundError as err:
@@ -14,86 +22,19 @@ except ModuleNotFoundError as err:
 else:
 	QRCODE_LIB_PRESENT = True
 
-VERSION = float(0.1)
-BTCLIB_DB_PATH = str('')
-HOME_DIR = str('')
-SCREENBAR = str('')
-MSGBAR = str('')
-TRM_LINES=int()
-TRM_COLS=int()
+# ------------------------------------------------------------------------
 
 widReg = []
 
-def getTerminalSize(sig, frame):
-	global TRM_COLS
-	global TRM_LINES
-
-	TRM_COLS, TRM_LINES = os.get_terminal_size()
-
-def clearscreen():
-	if os.name == 'posix':
-		os.system('clear')
-	elif os.name == 'nt':
-		os.system('cls')
-	else:
-		print('\n\n\n\n\n')
-
-def exec_menu(opts):
-	totOpts = len(opts)
-
-	while(1):
-		printScreenHeader()
-
-		[print(i) for i in opts]
-
-		print('\n')
-
-		try:
-			x = int(input('Option: '))
-		except:
-			continue
-
-		if x < totOpts:
-			return x - 1
-
-def setStatusMsgBars(scr, msg):
-	global SCREENBAR
-	global MSGBAR
-
-	SCREENBAR = scr
-	MSGBAR = msg
-
-def printScreenHeader(scrBar = '', msgBar = ''):
-	global VERSION
-	global BTCLIB_DB_PATH
-	global SCREENBAR
-	global MSGBAR
-	global TRM_COLS
-	global TRM_LINES
-
-	if scrBar != '':
-		SCREENBAR = scrBar
-
-	if msgBar != '':
-		MSGBAR = msgBar
-
-	clearscreen()
-	print('As Wallet'.center(TRM_COLS))
-	print('========='.center(TRM_COLS))
-	print('-' * TRM_COLS)
-	print(f'(Version: \'{VERSION}\' BitcoinLib DB path: \'{BTCLIB_DB_PATH}\')\n')
-	print(f'* {SCREENBAR} *'.center(TRM_COLS))
-	print(f'Status: {MSGBAR}\n')
-	print('-' * TRM_COLS)
+# ------------------------------------------------------------------------
 
 def screen_SelPthBTCLib():
 # bitcoinlib.db.DbInit(databasefile='/home/docs/.bitcoinlib/database/bitcoinlib.sqlite')[source]
 	screenTitle = 'Set bitcoinlib DB path'
 	newPath = str('')
-	global BTCLIB_DB_PATH
 
 	while(1):
-		printScreenHeader(scrBar = screenTitle)
+		screen_util.printScreenHeader(scrBar = screenTitle)
 
 		try:
 			newPath = input('New SQLite bitcoinlib DB path (blank to go back): ')
@@ -109,7 +50,7 @@ def screen_SelPthBTCLib():
 		else:
 			break
 
-	BTCLIB_DB_PATH = newPath
+	As_util.BTCLIB_DB_PATH = newPath
 
 	return screen_Main
 
@@ -124,7 +65,7 @@ def screen_CreaBTCWltt():
 	wltnet   = str('')
 	wltname  = str('')
 
-	printScreenHeader(scrBar = screenTitle)
+	screen_util.printScreenHeader(scrBar = screenTitle)
 
 	try:
 		wltname = input('Wallet name (blank to go back): ')
@@ -134,7 +75,7 @@ def screen_CreaBTCWltt():
 	if wltname == '':
 		return screen_CreaWltt
 
-	setStatusMsgBars(screenTitle, 'Name [' + wltname + ']')
+	screen_util.setStatusMsgBars(screenTitle, 'Name [' + wltname + ']')
 
 	menu = ["1 - Legacy",
 	        "2 - Segwit",
@@ -142,7 +83,7 @@ def screen_CreaBTCWltt():
 	        "4 - Back",
 	        "0 - Exit"]
 
-	opt = exec_menu(menu)
+	opt = screen_util.exec_menu(menu)
 
 	if opt == -1:
 		sys.exit(0)
@@ -155,7 +96,7 @@ def screen_CreaBTCWltt():
 	elif opt == 2:
 		wlttype = 'p2sh-segwit'
 
-	setStatusMsgBars(screenTitle, 'Name [' + wltname + '] Type [' + wlttype + ']')
+	screen_util.setStatusMsgBars(screenTitle, 'Name [' + wltname + '] Type [' + wlttype + ']')
 
 	menu = ["1 - BTC Main net",
 	        "2 - Litecoin",
@@ -163,7 +104,7 @@ def screen_CreaBTCWltt():
 	        "4 - Back",
 	        "0 - Exit"]
 
-	opt = exec_menu(menu)
+	opt = screen_util.exec_menu(menu)
 
 	if opt == -1:
 		sys.exit(0)
@@ -176,7 +117,7 @@ def screen_CreaBTCWltt():
 	elif opt == 2:
 		wltnet = 'litecoin'
 
-	setStatusMsgBars(screenTitle, 'Name [' + wltname + '] Type [' + wlttype + ']' + ' Net [' + wltnet + ']')
+	screen_util.setStatusMsgBars(screenTitle, 'Name [' + wltname + '] Type [' + wlttype + ']' + ' Net [' + wltnet + ']')
 #TODO
 	sys.exit(0)
 
@@ -206,9 +147,9 @@ def screen_CreaWltt():
 		]
 	}
 
-	setStatusMsgBars('Create Wallet Menu', '')
+	screen_util.setStatusMsgBars('Create Wallet Menu', '')
 
-	return menu['funcs'][exec_menu(menu['titles'])]
+	return menu['funcs'][screen_util.exec_menu(menu['titles'])]
 
 def screen_DelWltt():
 	print('Not implemented')
@@ -223,9 +164,9 @@ def screen_OperWltt():
 	global widReg
 	wid = 0
 
-	printScreenHeader(scrBar = 'Operate a Wallet', msgBar = '')
+	screen_util.printScreenHeader(scrBar = 'Operate a Wallet', msgBar = '')
 
-	acc = bitcoinlib.wallets.wallets_list(BTCLIB_DB_PATH)
+	acc = bitcoinlib.wallets.wallets_list(As_util.BTCLIB_DB_PATH)
 #	[print(i) for i in acc]
 
 	[print('Id.....: [' + str(i['id']) + ']\nName...: [' + i['name'] + ']\nOwner..: [' + i['owner'] +
@@ -248,7 +189,7 @@ def screen_OperWltt():
 		except:
 			return screen_Wallet
 
-	printScreenHeader(scrBar = '', msgBar = f'Wallet Id selected [{wid} - ' + widReg['name'] + ']')
+	screen_util.printScreenHeader(scrBar = '', msgBar = f'Wallet Id selected [{wid} - ' + widReg['name'] + ']')
 
 	menu = {
 		'titles':[
@@ -269,7 +210,7 @@ def screen_OperWltt():
 		]
 	}
 
-	return menu['funcs'][exec_menu(menu['titles'])]
+	return menu['funcs'][screen_util.exec_menu(menu['titles'])]
 
 def screen_Send():
 
@@ -303,9 +244,8 @@ def screen_Recv():
 
 def screen_ExportPrivateKey():
 	global QRCODE_LIB_PRESENT
-	global HOME_DIR
 
-	printScreenHeader(scrBar = 'Export Private Key', msgBar = 'Wallet ' + widReg['name'])
+	screen_util.printScreenHeader(scrBar = 'Export Private Key', msgBar = 'Wallet ' + widReg['name'])
 
 	w = bitcoinlib.wallets.HDWallet(widReg['id'])
 
@@ -323,15 +263,15 @@ def screen_ExportPrivateKey():
 		prvQrCodeFileName  = ''
 		seedQrCodeFileName = ''
 
-		opt = exec_menu(menu)
+		opt = screen_util.exec_menu(menu)
 
 		if opt == 0 or opt == 2:
 			prvQrCodeFileName = input('PNG file name to print PK: ')
-			prvQrCodeFileName = ''.join((HOME_DIR, prvQrCodeFileName))
+			prvQrCodeFileName = ''.join((As_util.HOME_DIR, prvQrCodeFileName))
 
 		if opt == 1 or opt == 2:
 			seedQrCodeFileName = input('PNG file name to print seed: ')
-			seedQrCodeFileName = ''.join((HOME_DIR, seedQrCodeFileName))
+			seedQrCodeFileName = ''.join((As_util.HOME_DIR, seedQrCodeFileName))
 
 		if prvQrCodeFileName != '':
 			if printQRCodeToFile(prvQrCodeFileName, w.get_key().wif) == False:
@@ -369,7 +309,7 @@ def printQRCodeToFile(filename: str, data: str) -> bool:
 	return True
 
 def screen_BalanceHistoryInfo():
-	printScreenHeader(scrBar = 'Wallet Balance', msgBar = 'Wallet ' + widReg['name'])
+	screen_util.printScreenHeader(scrBar = 'Wallet Balance', msgBar = 'Wallet ' + widReg['name'])
 
 	print(bitcoinlib.wallets.HDWallet(widReg['id']).info())
 #	w = bitcoinlib.wallets.HDWallet(widReg['id'])
@@ -398,7 +338,7 @@ def screen_Cfg():
 		]
 	}
 
-	return menu['funcs'][exec_menu(menu['titles'])]
+	return menu['funcs'][screen_util.exec_menu(menu['titles'])]
 
 def screen_Wallet():
 	menu = {
@@ -407,7 +347,8 @@ def screen_Wallet():
 			"2 - Delete wallet",
 			"3 - Operate wallet (send/recv/export keys/info)",
 			"4 - Import a wallet",
-			"5 - Back",
+			"5 - Send a signed transaction",
+			"6 - Back",
 			"0 - Exit"
 		],
 		'funcs':[
@@ -415,14 +356,19 @@ def screen_Wallet():
 			screen_DelWltt,
 			screen_OperWltt,
 			screen_ImpWltt,
+			screen_SendSignedTrx,
 			screen_Main,
 			screen_Exit
 		]
 	}
 
-	setStatusMsgBars('Main Menu', '')
+	screen_util.setStatusMsgBars('Main Menu', '')
 
-	return menu['funcs'][exec_menu(menu['titles'])]
+	return menu['funcs'][screen_util.exec_menu(menu['titles'])]
+
+def screen_SendSignedTrx():
+	print('Not implemented')
+	sys.exit(0)
 
 def screen_ImpWltt():
 	print('Not implemented')
@@ -446,26 +392,26 @@ def screen_Main():
 		]
 	}
 
-	setStatusMsgBars('Config Menu', '')
+	screen_util.setStatusMsgBars('Config Menu', '')
 
-	return menu['funcs'][exec_menu(menu['titles'])]
+	return menu['funcs'][screen_util.exec_menu(menu['titles'])]
 
 def main(argv):
 	scr = screen_Main
 
-	while True:
+	while(1):
 		scr = scr()
 
 if __name__ == '__main__':
 
-	HOME_DIR = os.path.expanduser("~/")
+	As_util.HOME_DIR = os.path.expanduser("~/")
 #	BTCLIB_DB_PATH = os.getenv("HOME") + '/.bitcoinlib/database/bitcoinlib.sqlite'
-	BTCLIB_DB_PATH = HOME_DIR + '.bitcoinlib/database/bitcoinlib.sqlite'
-	if os.path.isfile(BTCLIB_DB_PATH) == False:
-		BTCLIB_DB_PATH = 'UNDEFINED WALLET DB'
+	As_util.BTCLIB_DB_PATH = As_util.HOME_DIR + '.bitcoinlib/database/bitcoinlib.sqlite'
+	if os.path.isfile(As_util.BTCLIB_DB_PATH) == False:
+		As_util.BTCLIB_DB_PATH = 'UNDEFINED WALLET DB'
 
 #	signal.signal(signal.SIGWINCH, getTerminalSize)     not working now. input() supresses the signal
-	getTerminalSize(0, 0)
+	screen_util.getTerminalSize(0, 0)
 
 	main(sys.argv)
 
