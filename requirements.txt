@@ -1,7 +1,7 @@
 bitcoinlib==0.4.11
 certifi==2019.11.28
 chardet==3.0.4
-fastecdsa==2.0.0
+fastecdsa==2.1.2
 idna==2.8
 Pillow==8.2.0
 pyaes==1.6.1
