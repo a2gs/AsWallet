@@ -1,5 +1,5 @@
 bitcoinlib==0.4.11
-certifi==2019.11.28
+certifi==2022.12.7
 chardet==3.0.4
 fastecdsa==2.0.0
 idna==2.8
